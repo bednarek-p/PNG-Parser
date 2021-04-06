@@ -1,5 +1,10 @@
 from chunk import read_chunk
-
+from IHDR_chunk import Ihdr
+import zlib
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+import copy
 
 class Decoder:
     """Decoder class"""
@@ -20,4 +25,7 @@ class Decoder:
 
     def print_chunks_type(self):
         print("CHUNKS TYPE: ", [chunk_type for chunk_type, chunk_data in self.chunks_list])
-        return 0
+
+    def print_IHDR_chunk_data(self):
+        data = Ihdr(self.chunks_list[0][1])
+        data.print_data()
