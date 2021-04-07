@@ -29,3 +29,7 @@ class Decoder:
     def print_IHDR_chunk_data(self):
         data = Ihdr(self.chunks_list[0][1])
         data.print_data()
+
+    def print_IHDR_chunk_formated_data(self):
+        data = Ihdr(self.chunks_list[0][1])
+        data.print_formated_data()

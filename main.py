@@ -10,5 +10,4 @@ if png_file.read(len(Decoder.SIGNATURE)) != Decoder.SIGNATURE:
     raise Exception('Its not PNG file')
 else:
     png = Decoder(png_file)
-    #png.print_chunks_type()
-    png.print_IHDR_chunk_data()
+    png.print_IHDR_chunk_formated_data()
