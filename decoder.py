@@ -44,15 +44,17 @@ class Decoder:
         data=Idat(idat_data,image_width,image_height)
         data.plot_decoded_image()
 
-    def print_sRGB_chunk_data(self):
-        try: 
+    def SRGB_print_chunk_data(self):
+        try:
+>>>>>>> 87f4e55fa5675145e17df90a1c024946593b6692
             data = Srgb(self.get_chunk_from_list(b'sRGB'))
             data.print_data()
         except ValueError:
             raise Exception("png does not contain sRGB chunk")
 
-    def print_sRGB_chunk_formated_data(self):
-        try: 
+    def SRGB_print_chunk_formated_data(self):
+        try:
+>>>>>>> 87f4e55fa5675145e17df90a1c024946593b6692
             data = Srgb(self.get_chunk_from_list(b'sRGB'))
             data.print_formated_data()
         except ValueError:
