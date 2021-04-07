@@ -1,7 +1,9 @@
 from chunk import read_chunk
+
 from IHDR_chunk import Ihdr
 from sRGB_chunk import Srgb
 from IDAT_chunk import Idat
+from IEND_chunk import Iend
 
 import zlib
 import cv2
@@ -32,6 +34,7 @@ class Decoder:
 
     def IHDR_print_chunk_data(self):
         data = Ihdr(self.get_chunk_from_list(b'IHDR'))
+        data.print_data()
 
     def IHDR_print_chunk_formated_data(self):
         data = Ihdr(self.get_chunk_from_list(b'IHDR'))
@@ -43,6 +46,13 @@ class Decoder:
         image_height = Ihdr(self.chunks_list[0][1]).get_height()
         data=Idat(idat_data,image_width,image_height)
         data.plot_decoded_image()
+
+    def IEND_print_chunk_data(self):
+        try:
+            data = Iend(self.get_chunk_from_list(b'IEND'))
+            data.print_data()
+        except ValueError:
+            raise Exception("png does not contain IEND chunk")
 
     def SRGB_print_chunk_data(self):
         try:
