@@ -55,3 +55,9 @@ class Ihdr:
     def filter_method_format(self):
         if self.filter_method == 0:
             return "Adaptive filtering"
+
+    def get_width(self):
+        return self.width
+
+    def get_height(self):
+        return self.height
