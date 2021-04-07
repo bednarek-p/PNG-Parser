@@ -1,7 +1,32 @@
 import struct # parsing PNG file
 
 class Ihdr:
-    """IHDR chunk  class"""
+    """IHDR chunk  class
+    -This chunk must appear FIRST!
+    -This chunk contains:
+        - Width              (4 bytes)
+        - Height             (4 bytes)
+        - Bit Depth          (1 byte)
+        - Color type         (1 byte)
+            Value:
+            - 0 -> Each pixel is a grayscale sample.
+            - 2 -> Each pixel is a R,G,B triple.
+            - 3 -> Each pixel is a palette index; a PLTE chunk shall appear.
+            - 4 -> Each pixel is a grayscale sample followed by an alpha sample.
+            - 6 -> Each pixel is a R,G,B triple followed by an alpha sample.
+        - Compression method (1 byte)
+            Value:
+            - 0 -> deflate/inflate compression with a sliding window
+            - 1 -> not defined - ERROR
+        - Filter method      (1 byte)
+            Value:
+            - 0 -> Adaptive filtering with five basic filter types
+            - 1 -> not defined - ERROR
+        - Interlace method   (1 byte)
+            Value:
+            - 0 -> No interlace method
+            - 1 -> Adam7 interlace method
+    """
 
     def __init__(self, chunk_data):
         self.all_data = chunk_data

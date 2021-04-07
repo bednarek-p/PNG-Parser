@@ -4,7 +4,19 @@ import matplotlib.pyplot as plot
 import numpy as np
 
 class Idat:
-    """IDAT chunk  class"""
+    """IDAT chunk  class
+    -Chunk contains the actual image data.
+    -Chunk contains the output datastream of compression algorithm
+
+    -There can be multiple IDAT chunks in png file if so, they must appear consecutively with no other intervening chunks
+
+    -Image consist of SCNALINES which are individual rows of pixels. Each pixel consist of RGBA sample (1 unsigned byte)
+    -EXAMPLE OF RAW DATA IDAT chunk:
+            [255, 0, 0, 255, 0, 0, 255, 255], # First scanline
+            [0, 255, 0, 255, 255, 255, 255, 255], # Second scanline
+
+            This example is an IMAGE OF 4 pixels (red,blue,green,white)
+    """
 
     def __init__(self, chunk_data, width, height):
         self.all_data = zlib.decompress(chunk_data)
