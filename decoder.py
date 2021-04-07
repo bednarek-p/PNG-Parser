@@ -1,13 +1,14 @@
 from chunk import read_chunk
 from IHDR_chunk import Ihdr
 from sRGB_chunk import Srgb
+from IDAT_chunk import Idat
+
 import zlib
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
-import logging
-logging.basicConfig(level=logging.DEBUG)
+
 
 class Decoder:
     """Decoder class"""
@@ -29,13 +30,19 @@ class Decoder:
     def print_chunks_type(self):
         print("CHUNKS TYPE: ", [chunk_type for chunk_type, chunk_data in self.chunks_list])
 
-    def print_IHDR_chunk_data(self):
-        data = Ihdr(self.chunks_list[0][1])
-        data.print_data()
+    def IHDR_print_chunk_data(self):
+        data = Ihdr(self.get_chunk_from_list(b'IHDR'))
 
-    def print_IHDR_chunk_formated_data(self):
-        data = Ihdr(self.chunks_list[0][1])
+    def IHDR_print_chunk_formated_data(self):
+        data = Ihdr(self.get_chunk_from_list(b'IHDR'))
         data.print_formated_data()
+
+    def IDAT_plot_image(self):
+        idat_data = b''.join(chunk_data for chunk_type, chunk_data in self.chunks_list if chunk_type == b'IDAT')#needed for IDAT chunk processing
+        image_width = Ihdr(self.chunks_list[0][1]).get_width()
+        image_height = Ihdr(self.chunks_list[0][1]).get_height()
+        data=Idat(idat_data,image_width,image_height)
+        data.plot_decoded_image()
 
     def print_sRGB_chunk_data(self):
         try: 
