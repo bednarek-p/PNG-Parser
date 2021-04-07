@@ -38,10 +38,25 @@ class Decoder:
         data.print_formated_data()
 
     def print_sRGB_chunk_data(self):
-        data = Srgb(self.chunks_list[1][1])
-        data.print_data()
+        try: 
+            data = Srgb(self.get_chunk_from_list(b'sRGB'))
+            data.print_data()
+        except ValueError:
+            raise Exception("png does not contain sRGB chunk")
 
     def print_sRGB_chunk_formated_data(self):
-        data = Srgb(self.chunks_list[1][1])
-        data.print_formated_data()
+        try: 
+            data = Srgb(self.get_chunk_from_list(b'sRGB'))
+            data.print_formated_data()
+        except ValueError:
+            raise Exception("png does not contain sRGB chunk")
 
+    def get_chunk_from_list(self, chunk):
+        """
+        Function returns particular chunk data is the one exist in png file,
+        if it does not, than ValueError comes out
+        """
+        for chunk_type, chunk_data in self.chunks_list:
+            if chunk_type == chunk:
+                return chunk_data
+        raise ValueError("png does not contain sRGB chunk")
