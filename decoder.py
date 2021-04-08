@@ -5,6 +5,7 @@ from sRGB_chunk import Srgb
 from IDAT_chunk import Idat
 from IEND_chunk import Iend
 from gAMA_chunk import Gama
+from cHRM_chunk import Chrm
 
 import zlib
 import cv2
@@ -92,5 +93,19 @@ class Decoder:
             data.print_formated_data()
         except ValueError:
             raise Exception("png does not contain gAMA chunk")
+
+    def CHRM_print_chunk_data(self):
+        try:
+            data = Chrm(self.get_chunk_from_list(b'cHRM'))
+            data.print_data()
+        except ValueError:
+            raise Exception("png does not contain cHRM chunk")
+
+    def CHRM_print_chunk_formated_data(self):
+        try:
+            data = Chrm(self.get_chunk_from_list(b'cHRM'))
+            data.print_formated_data()
+        except ValueError:
+            raise Exception("png does not contain cHRM chunk")
     
     
