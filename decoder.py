@@ -4,6 +4,7 @@ from IHDR_chunk import Ihdr
 from sRGB_chunk import Srgb
 from IDAT_chunk import Idat
 from IEND_chunk import Iend
+from gAMA_chunk import Gama
 
 import zlib
 import cv2
@@ -70,10 +71,26 @@ class Decoder:
 
     def get_chunk_from_list(self, chunk):
         """
-        Function returns particular chunk data is the one exist in png file,
+        Function returns particular chunk data if the one exist in png file,
         if it does not, than ValueError comes out
         """
         for chunk_type, chunk_data in self.chunks_list:
             if chunk_type == chunk:
                 return chunk_data
         raise ValueError("png does not contain sRGB chunk")
+    
+    def GAMA_print_chunk_data(self):
+        try:
+            data = Gama(self.get_chunk_from_list(b'gAMA'))
+            data.print_data()
+        except ValueError:
+            raise Exception("png does not contain gAMA chunk")
+
+    def GAMA_print_chunk_formated_data(self):
+        try:
+            data = Gama(self.get_chunk_from_list(b'gAMA'))
+            data.print_formated_data()
+        except ValueError:
+            raise Exception("png does not contain gAMA chunk")
+    
+    

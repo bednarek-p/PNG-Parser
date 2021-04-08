@@ -1,7 +1,18 @@
 import struct # parsing PNG file
 
 class Srgb:
-    """sRGB chunk class"""
+    """
+    sRGB chunk class
+    -The present means that image samples conform to sRGB color spaces.
+    displayed using the specified rendering intent as defined by the International Color Consortium 
+    -This chunk contains:
+        - Rendering intent          (1 byte)
+            Value:
+            - 0 -> Percepual
+            - 1 -> Relative colorimetric
+            - 2 -> Saturation
+            - 3 -> Absolute colorimetric
+    """
 
     def __init__(self, chunk_data):
         self.all_data = chunk_data
