@@ -86,3 +86,9 @@ class Ihdr:
 
     def get_height(self):
         return self.height
+
+    def get_bit_depth(self):
+        return self.bit_depth
+
+    def get_color_type(self):
+        return self.color_type
