@@ -1,4 +1,5 @@
 from chunk import read_chunk
+from fft_spectrum import Spectrum
 
 from IHDR_chunk import Ihdr
 from sRGB_chunk import Srgb
@@ -19,8 +20,9 @@ class Decoder:
     """Decoder class"""
     SIGNATURE = b'\x89PNG\r\n\x1a\n' #PNG file ALWAYS starts with this signature
 
-    def __init__(self, image):
+    def __init__(self, image, cv2_image):
         self.image = image
+        self.image_grayscale = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2GRAY)
         self.chunks_list = []
 
         while True:
@@ -44,6 +46,13 @@ class Decoder:
             if chunk_type == chunk:
                 return chunk_data
         raise ValueError("png does not contain ??? chunk") #FIX THIS (???) !
+
+    def Spectrum_show_images(self):
+        try:
+            spectrum = Spectrum(self.image_grayscale)
+            spectrum.show_spectrum_fft()
+        except ValueError:
+            raise Exception("Error while showing spectrum")
 
     def IHDR_print_chunk_data(self):
         try:
