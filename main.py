@@ -19,3 +19,5 @@ else:
     # png.IEND_print_chunk_data()
     # png.SRGB_print_chunk_data()
     # png.SRGB_print_chunk_formated_data()
+    # png.PLTE_print_chunk_data()
+    # png.PLTE_print_chunk_formated_data()
