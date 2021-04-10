@@ -164,3 +164,4 @@ class Decoder:
                 file_.write(chunk_data)
                 file_.write(struct.pack('>I', chunk_crc))
         file_.close()
+        return filename
