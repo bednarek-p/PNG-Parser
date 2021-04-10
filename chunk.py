@@ -21,4 +21,4 @@ def read_chunk(file):
 
     if chunk_crc != checksum:
         raise Exception('Chunk checksum failed {} != {}'.format(chunk_crc , checksum))
-    return chunk_type,chunk_data
+    return chunk_type,chunk_data, chunk_crc

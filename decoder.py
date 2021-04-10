@@ -14,6 +14,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
+from datetime import datetime
+import struct
 
 
 class Decoder:
@@ -26,8 +28,8 @@ class Decoder:
         self.chunks_list = []
 
         while True:
-            chunk_type , chunk_data = read_chunk(self.image)
-            self.chunks_list.append((chunk_type, chunk_data))
+            chunk_type , chunk_data, chunk_crc = read_chunk(self.image)
+            self.chunks_list.append((chunk_type, chunk_data, chunk_crc))
 
             if chunk_type == b'IEND':
                 break
@@ -35,14 +37,14 @@ class Decoder:
 
 
     def print_chunks_type(self):
-        print("CHUNKS TYPE: ", [chunk_type for chunk_type, chunk_data in self.chunks_list])
+        print("CHUNKS TYPE: ", [chunk_type for chunk_type, chunk_data, chunk_crc in self.chunks_list])
 
     def get_chunk_from_list(self, chunk):
         """
         Function returns particular chunk data if the one exist in png file,
         if it does not, than ValueError comes out
         """
-        for chunk_type, chunk_data in self.chunks_list:
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
             if chunk_type == chunk:
                 return chunk_data
         raise ValueError("png does not contain ??? chunk") #FIX THIS (???) !
@@ -72,7 +74,7 @@ class Decoder:
 
     def IDAT_plot_image(self):
         try:
-            idat_data = b''.join(chunk_data for chunk_type, chunk_data in self.chunks_list if chunk_type == b'IDAT')
+            idat_data = b''.join(chunk_data for chunk_type, chunk_data, chunk_crc in self.chunks_list if chunk_type == b'IDAT')
             image_width = Ihdr(self.chunks_list[0][1]).get_width()
             image_height = Ihdr(self.chunks_list[0][1]).get_height()
             data=Idat(idat_data,image_width,image_height)
@@ -148,3 +150,17 @@ class Decoder:
             data.print_data_formated()
         except ValueError:
             raise Exception("png does not contain PLTE chunk")
+
+    def anonymization(self):
+        filename = f"anonymization_result_{datetime.now()}.png"
+        path = f"{filename}"
+        file_ = open(path, 'wb')
+        file_.write(Decoder.SIGNATURE)
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+            if chunk_type in [b'IHDR', b'IDAT', b'PLTE', b'IEND']:
+                chunk_len = len(chunk_data)
+                file_.write(struct.pack('>I', chunk_len))
+                file_.write(chunk_type)
+                file_.write(chunk_data)
+                file_.write(struct.pack('>I', chunk_crc))
+        file_.close()
