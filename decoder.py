@@ -152,9 +152,8 @@ class Decoder:
             raise Exception("png does not contain PLTE chunk")
 
     def anonymization(self):
-        filename = f"anonymization_result_{datetime.now()}.png"
-        path = f"{filename}"
-        file_ = open(path, 'wb')
+        filename = "anonymization_result.png"
+        file_ = open(filename, 'wb')
         file_.write(Decoder.SIGNATURE)
         for chunk_type, chunk_data, chunk_crc in self.chunks_list:
             if chunk_type in [b'IHDR', b'IDAT', b'PLTE', b'IEND']:
@@ -164,3 +163,4 @@ class Decoder:
                 file_.write(chunk_data)
                 file_.write(struct.pack('>I', chunk_crc))
         file_.close()
+        return filename
