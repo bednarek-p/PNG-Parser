@@ -4,17 +4,17 @@ import argparse
 
 
 """READING PNG FILE"""
-def init_png(path):
+def init_png(image_path):
     png_file = open(path , 'rb')
-    png_cv2_image = cv2.imread(path)
+    png_cv2_image = cv2.imread(image_path)
 
     #Check if file is png file
     if png_file.read(len(Decoder.SIGNATURE)) != Decoder.SIGNATURE:
         raise Exception('Its not PNG file')
     else:
-        png = Decoder(png_file, png_cv2_image)
+        png_object = Decoder(png_file, png_cv2_image)
 
-    return png
+    return png_object
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -42,42 +42,42 @@ if __name__ == "__main__":
     anonymization = args["anonymization"]
 
     png = init_png(path)
-    if chunk_list: 
+    if chunk_list:
         print("LISTA")
         png.print_chunks_type()
         print("-----------------------------\n")
 
-    if ihdr: 
+    if ihdr:
         print("IHDR")
         png.IHDR_print_chunk_formated_data()
         print("-----------------------------\n")
 
-    if srgb: 
+    if srgb:
         print("SRGB")
         png.SRGB_print_chunk_data()
         print("-----------------------------\n")
 
-    if idat: 
+    if idat:
         print("IDAT")
-        png.IEND_print_chunk_data()
+        png.IDAT_plot_image()
         print("-----------------------------\n")
 
-    if iend: 
+    if iend:
         print("IEND")
         png.IEND_print_chunk_data()
         print("-----------------------------\n")
 
-    if gama: 
+    if gama:
         print("GAMA")
         png.GAMA_print_chunk_formated_data()
         print("-----------------------------\n")
 
-    if chrm: 
+    if chrm:
         print("CHRM")
         png.CHRM_print_chunk_formated_data()
         print("-----------------------------\n")
 
-    if plte: 
+    if plte:
         print("PLTE")
         png.PLTE_print_chunk_formated_data()
         print("-----------------------------\n")
@@ -88,12 +88,9 @@ if __name__ == "__main__":
         print("chunks before")
         png.print_chunks_type()
         print("---")
-        new_file = png.anonymization()
 
-        png_file2 = open(new_file , 'rb')
-        png_cv2_image2 = cv2.imread(path)
-
-        png2 = init_png(new_file)
+        path = png.anonymization()
+        png2 = init_png(path)
 
         print("---")
         print("chunks after")
