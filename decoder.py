@@ -133,7 +133,9 @@ class Decoder:
 
     def PLTE_print_chunk_data(self):
         try:
-            data = Plte(self.get_chunk_from_list(b'PLTE'))
+            width = Ihdr(self.get_chunk_from_list(b'IHDR')).get_width()
+            height = Ihdr(self.get_chunk_from_list(b'IHDR')).get_height()
+            data = Plte(self.get_chunk_from_list(b'PLTE'),width,height)
             color_type = Ihdr(self.get_chunk_from_list(b'IHDR')).get_color_type()
             bit_depth = Ihdr(self.get_chunk_from_list(b'IHDR')).get_bit_depth()
             data.check_chunk_correctness(color_type, bit_depth)
@@ -148,6 +150,16 @@ class Decoder:
             bit_depth = Ihdr(self.get_chunk_from_list(b'IHDR')).get_bit_depth()
             data.check_chunk_correctness(color_type, bit_depth)
             data.print_data_formated()
+        except ValueError:
+            raise Exception("png does not contain PLTE chunk")
+
+    def PLTE_plot_chunk_palette(self):
+        try:
+            data = Plte(self.get_chunk_from_list(b'PLTE'))
+            color_type = Ihdr(self.get_chunk_from_list(b'IHDR')).get_color_type()
+            bit_depth = Ihdr(self.get_chunk_from_list(b'IHDR')).get_bit_depth()
+            data.check_chunk_correctness(color_type, bit_depth)
+            data.plot_data_palette()
         except ValueError:
             raise Exception("png does not contain PLTE chunk")
 
