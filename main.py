@@ -27,6 +27,7 @@ if __name__ == "__main__":
     ap.add_argument("-gama", "--gama", nargs='?', const=True, default=False, help="gAMA chunk")
     ap.add_argument("-chrm", "--chrm", nargs='?', const=True, default=False, help="cHRM chunk")
     ap.add_argument("-plte", "--plte", nargs='?', const=True, default=False, help="pLTE chunk")
+    ap.add_argument("-fft", "--fft", nargs='?', const=True, default=False, help="Fast Fourier Transformate")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
 
     args = vars(ap.parse_args())
@@ -39,6 +40,7 @@ if __name__ == "__main__":
     gama = args["gama"]
     chrm = args["chrm"]
     plte = args["plte"]
+    fft = args["fft"]
     anonymization = args["anonymization"]
 
     png = init_png(path)
@@ -99,9 +101,18 @@ if __name__ == "__main__":
     if plte:
         print("PLTE")
         try:
-            png.PLTE_print_chunk_formated_data()
+            #png.PLTE_print_chunk_formated_data()
+            png.PLTE_plot_chunk_palette()
         except:
             print("NO PLTE CHUNK IN THIS FILE!")
+        print("-----------------------------\n")
+
+    if fft:
+        print("FFT")
+        try:
+            png.Spectrum_show_images()
+        except:
+            print("ERROR WHILE DOING FFT!")
         print("-----------------------------\n")
 
     if anonymization:

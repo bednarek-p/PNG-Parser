@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plot
 
 class Plte:
     """Plte chunk  class
@@ -41,6 +42,17 @@ class Plte:
         self.palette = np.reshape(self.palette, (-1,3))
         print("\n~~~~~~~~~~~PLTE CHUNK - PALETTE~~~~~~~~~~~~~~")
         print(self.palette)
+
+    def plot_data_palette(self):
+        self.parse_data()
+        self.palette = np.reshape(self.palette, (-1,3))
+        self.palette = self.palette / 255
+        #print("\n~~~~~~~~~~~PLTE CHUNK - PALETTE~~~~~~~~~~~~~~")
+        #print(self.palette)
+        #plot.imshow(np.array(np.sort(self.palette, axis=0)).reshape(1,len(self.palette),3), aspect='auto')
+        plot.imshow(np.array(self.palette).reshape(1,len(self.palette),3), aspect='auto')
+        plot.title('Palette in PLTE chunk')
+        plot.show()
 
     def parse_data(self):
         for i in range(0,len(self.all_data), 3):

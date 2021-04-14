@@ -4,7 +4,7 @@ class Srgb:
     """
     sRGB chunk class
     -The present means that image samples conform to sRGB color spaces.
-    displayed using the specified rendering intent as defined by the International Color Consortium 
+    displayed using the specified rendering intent as defined by the International Color Consortium
     -This chunk contains:
         - Rendering intent          (1 byte)
             Value:
@@ -30,7 +30,7 @@ class Srgb:
                                     "Saturation",
                                     "Absolute colorimetric",
                                     ]
-        
+
         try:
             return rendering_intent_content[self.rendering_intent]
         except IndexError:
