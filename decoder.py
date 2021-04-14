@@ -47,7 +47,7 @@ class Decoder:
         for chunk_type, chunk_data, chunk_crc in self.chunks_list:
             if chunk_type == chunk:
                 return chunk_data
-        raise ValueError("png does not contain ??? chunk") #FIX THIS (???) !
+        raise ValueError("png does not contain ??? chunk")
 
     def Spectrum_show_images(self):
         try:
