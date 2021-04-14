@@ -49,37 +49,59 @@ if __name__ == "__main__":
 
     if ihdr:
         print("IHDR")
-        png.IHDR_print_chunk_formated_data()
+        try:
+            png.IHDR_print_chunk_formated_data()
+        except:
+            print("NO IHDR CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if srgb:
         print("SRGB")
-        png.SRGB_print_chunk_data()
+        try:
+            png.SRGB_print_chunk_data()
+        except:
+            print("NO SRGB CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if idat:
         print("IDAT")
-        png.IDAT_plot_image()
+        try:
+            png.IDAT_plot_image()
+            print("Image displayed using IDAT data.")
+        except:
+            print("NO IDAT CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if iend:
         print("IEND")
-        png.IEND_print_chunk_data()
+        try:
+            png.IEND_print_chunk_data()
+        except:
+            print("NO IEND CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if gama:
         print("GAMA")
-        png.GAMA_print_chunk_formated_data()
+        try:
+            png.GAMA_print_chunk_formated_data()
+        except:
+            print("NO GAMA CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if chrm:
         print("CHRM")
-        png.CHRM_print_chunk_formated_data()
+        try:
+            png.CHRM_print_chunk_formated_data()
+        except:
+            print("NO CHRM CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if plte:
         print("PLTE")
-        png.PLTE_print_chunk_formated_data()
+        try:
+            png.PLTE_print_chunk_formated_data()
+        except:
+            print("NO PLTE CHUNK IN THIS FILE!")
         print("-----------------------------\n")
 
     if anonymization:

@@ -9,10 +9,10 @@ def read_chunk(file):
     Returns (chunk_type,chunk_data)
 
     Build of chunk:
-        1. Length
-        2. Chunk Type
+        1. Length - 4 bytes
+        2. Chunk Type - 4 bytes
         3. Chunk Data
-        4. CRC - Cyclic Redundancy Code
+        4. CRC - Cyclic Redundancy Code - 4 bytes
     """
     chunk_length, chunk_type = struct.unpack('>I4s', file.read(8))
     chunk_data = file.read(chunk_length)
