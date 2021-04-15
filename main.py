@@ -28,6 +28,8 @@ if __name__ == "__main__":
     ap.add_argument("-chrm", "--chrm", nargs='?', const=True, default=False, help="cHRM chunk")
     ap.add_argument("-plte", "--plte", nargs='?', const=True, default=False, help="pLTE chunk")
     ap.add_argument("-fft", "--fft", nargs='?', const=True, default=False, help="Fast Fourier Transformate")
+    ap.add_argument("-itxt", "--itxt", nargs='?', const=True, default=False, help="iTXt chunk")
+    ap.add_argument("-text", "--text", nargs='?', const=True, default=False, help="tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
 
     args = vars(ap.parse_args())
@@ -41,6 +43,8 @@ if __name__ == "__main__":
     chrm = args["chrm"]
     plte = args["plte"]
     fft = args["fft"]
+    itxt = args["itxt"]
+    text = args["text"]
     anonymization = args["anonymization"]
 
     png = init_png(path)
@@ -129,4 +133,12 @@ if __name__ == "__main__":
         print("chunks after")
         png2.print_chunks_type()
         print("---")
+        print("-----------------------------\n")
+    
+    if text:
+        print("tEXt")
+        try:
+            png.TEXT_print_chunk_data()
+        except:
+            print("NO iTXt CHUNK IN THIS FILE")
         print("-----------------------------\n")

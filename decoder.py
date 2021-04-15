@@ -8,6 +8,8 @@ from IEND_chunk import Iend
 from gAMA_chunk import Gama
 from cHRM_chunk import Chrm
 from PLTE_chunk import Plte
+from iTXt_chunk import Itxt
+from tEXt_chunk import Text
 
 import zlib
 import cv2
@@ -176,3 +178,10 @@ class Decoder:
                 file_.write(struct.pack('>I', chunk_crc))
         file_.close()
         return filename
+
+    def TEXT_print_chunk_data(self):
+        try:
+            data = Text(self.get_chunk_from_list(b'tEXt'))
+            data.print_data()
+        except ValueError:
+            raise Exception("png does not contain tEXt chunk")
