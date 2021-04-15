@@ -19,17 +19,17 @@ def init_png(image_path):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--path", required=True, help="image file path")
-    ap.add_argument("-l", "--chunk_list", nargs='?', const=True, default=False, help="chunks type list")
-    ap.add_argument("-ihdr", "--ihdr", nargs='?', const=True, default=False, help="iHDR chunk")
-    ap.add_argument("-srgb", "--srgb", nargs='?', const=True, default=False, help="sRGB chunk")
-    ap.add_argument("-idat", "--idat", nargs='?', const=True, default=False, help="iDAT chunk")
-    ap.add_argument("-iend", "--iend", nargs='?', const=True, default=False, help="iEND chunk")
-    ap.add_argument("-gama", "--gama", nargs='?', const=True, default=False, help="gAMA chunk")
-    ap.add_argument("-chrm", "--chrm", nargs='?', const=True, default=False, help="cHRM chunk")
-    ap.add_argument("-plte", "--plte", nargs='?', const=True, default=False, help="pLTE chunk")
-    ap.add_argument("-fft", "--fft", nargs='?', const=True, default=False, help="Fast Fourier Transformate")
-    ap.add_argument("-itxt", "--itxt", nargs='?', const=True, default=False, help="iTXt chunk")
-    ap.add_argument("-text", "--text", nargs='?', const=True, default=False, help="tEXt chunk")
+    ap.add_argument("-l", "--chunk_list", nargs='?', const=True, default=False, help="display chunks type list")
+    ap.add_argument("--ihdr", nargs='?', const=True, default=False, help="display information of iHDR chunk")
+    ap.add_argument("--srgb", nargs='?', const=True, default=False, help="display information of sRGB chunk")
+    ap.add_argument("--idat", nargs='?', const=True, default=False, help="display information of iDAT chunk")
+    ap.add_argument("--iend", nargs='?', const=True, default=False, help="display information of iEND chunk")
+    ap.add_argument("--gama", nargs='?', const=True, default=False, help="display information of gAMA chunk")
+    ap.add_argument("--chrm", nargs='?', const=True, default=False, help="display information of cHRM chunk")
+    ap.add_argument("--plte", nargs='?', const=True, default=False, help="display information of pLTE chunk")
+    ap.add_argument("--fft", nargs='?', const=True, default=False, help="procede Fast Fourier Transformate on png")
+    ap.add_argument("--itxt", nargs='?', const=True, default=False, help="display information of iTXt chunk")
+    ap.add_argument("--text", nargs='?', const=True, default=False, help="display information of tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
 
     args = vars(ap.parse_args())
@@ -137,8 +137,8 @@ if __name__ == "__main__":
     
     if text:
         print("tEXt")
-        #try:
-        png.TEXT_print_chunk_data()
-        #except:
-        #    print("NO iTXt CHUNK IN THIS FILE")
+        try:
+            png.TEXT_print_chunk_data()
+        except:
+            print("NO iTXt CHUNK IN THIS FILE")
         print("-----------------------------\n")

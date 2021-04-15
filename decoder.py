@@ -52,6 +52,9 @@ class Decoder:
         raise ValueError("png does not contain ??? chunk")
 
     def png_contain_chunk(self, chunk):
+        """
+        Function o check if png contains particular chunk
+        """
         chunk_type_list = []
         for chunk_type, chunk_data, chunk_crc in self.chunks_list:
                 chunk_type_list.append(chunk_type)
@@ -61,6 +64,9 @@ class Decoder:
             raise ValueError("png does not contain ??? chunk")
     
     def get_chunk(self, chunk):
+        """
+        Generator to query particular chunks data
+        """
         self.png_contain_chunk(chunk)
         for chunk_type, chunk_data, chunk_crc in self.chunks_list:
             if chunk_type == chunk:
