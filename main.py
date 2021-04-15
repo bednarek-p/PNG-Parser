@@ -137,8 +137,8 @@ if __name__ == "__main__":
     
     if text:
         print("tEXt")
-        try:
-            png.TEXT_print_chunk_data()
-        except:
-            print("NO iTXt CHUNK IN THIS FILE")
+        #try:
+        png.TEXT_print_chunk_data()
+        #except:
+        #    print("NO iTXt CHUNK IN THIS FILE")
         print("-----------------------------\n")

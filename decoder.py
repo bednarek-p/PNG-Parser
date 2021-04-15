@@ -51,6 +51,21 @@ class Decoder:
                 return chunk_data
         raise ValueError("png does not contain ??? chunk")
 
+    def png_contain_chunk(self, chunk):
+        chunk_type_list = []
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+                chunk_type_list.append(chunk_type)
+        if chunk in chunk_type_list:
+            return True
+        else:
+            raise ValueError("png does not contain ??? chunk")
+    
+    def get_chunk(self, chunk):
+        self.png_contain_chunk(chunk)
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+            if chunk_type == chunk:
+                yield chunk_data
+
     def Spectrum_show_images(self):
         try:
             spectrum = Spectrum(self.image_grayscale)
@@ -181,7 +196,9 @@ class Decoder:
 
     def TEXT_print_chunk_data(self):
         try:
-            data = Text(self.get_chunk_from_list(b'tEXt'))
-            data.print_data()
+            for chunk in self.get_chunk(b'tEXt'):
+                data = Text(chunk)
+                print("")
+                data.print_data()
         except ValueError:
             raise Exception("png does not contain tEXt chunk")
