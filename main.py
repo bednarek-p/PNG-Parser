@@ -28,7 +28,6 @@ if __name__ == "__main__":
     ap.add_argument("--chrm", nargs='?', const=True, default=False, help="display information of cHRM chunk")
     ap.add_argument("--plte", nargs='?', const=True, default=False, help="display information of pLTE chunk")
     ap.add_argument("--fft", nargs='?', const=True, default=False, help="procede Fast Fourier Transformate on png")
-    ap.add_argument("--itxt", nargs='?', const=True, default=False, help="display information of iTXt chunk")
     ap.add_argument("--text", nargs='?', const=True, default=False, help="display information of tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
 
@@ -43,7 +42,6 @@ if __name__ == "__main__":
     chrm = args["chrm"]
     plte = args["plte"]
     fft = args["fft"]
-    itxt = args["itxt"]
     text = args["text"]
     anonymization = args["anonymization"]
 
@@ -134,11 +132,11 @@ if __name__ == "__main__":
         png2.print_chunks_type()
         print("---")
         print("-----------------------------\n")
-    
+
     if text:
         print("tEXt")
         try:
             png.TEXT_print_chunk_data()
         except:
-            print("NO iTXt CHUNK IN THIS FILE")
+            print("NO tEXt CHUNK IN THIS FILE")
         print("-----------------------------\n")

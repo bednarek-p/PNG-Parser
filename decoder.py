@@ -1,3 +1,6 @@
+import cv2
+import struct
+
 from chunk import read_chunk
 from fft_spectrum import Spectrum
 
@@ -8,16 +11,9 @@ from IEND_chunk import Iend
 from gAMA_chunk import Gama
 from cHRM_chunk import Chrm
 from PLTE_chunk import Plte
-from iTXt_chunk import Itxt
 from tEXt_chunk import Text
 
-import zlib
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-import copy
-from datetime import datetime
-import struct
+
 
 
 class Decoder:
@@ -62,7 +58,7 @@ class Decoder:
             return True
         else:
             raise ValueError("png does not contain ??? chunk")
-    
+
     def get_chunk(self, chunk):
         """
         Generator to query particular chunks data
