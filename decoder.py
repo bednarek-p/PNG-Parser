@@ -1,3 +1,6 @@
+import cv2
+import struct
+
 from chunk import read_chunk
 from fft_spectrum import Spectrum
 
@@ -8,14 +11,9 @@ from IEND_chunk import Iend
 from gAMA_chunk import Gama
 from cHRM_chunk import Chrm
 from PLTE_chunk import Plte
+from tEXt_chunk import Text
 
-import zlib
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-import copy
-from datetime import datetime
-import struct
+
 
 
 class Decoder:
@@ -48,6 +46,27 @@ class Decoder:
             if chunk_type == chunk:
                 return chunk_data
         raise ValueError("png does not contain ??? chunk")
+
+    def png_contain_chunk(self, chunk):
+        """
+        Function o check if png contains particular chunk
+        """
+        chunk_type_list = []
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+                chunk_type_list.append(chunk_type)
+        if chunk in chunk_type_list:
+            return True
+        else:
+            raise ValueError("png does not contain ??? chunk")
+
+    def get_chunk(self, chunk):
+        """
+        Generator to query particular chunks data
+        """
+        self.png_contain_chunk(chunk)
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+            if chunk_type == chunk:
+                yield chunk_data
 
     def Spectrum_show_images(self):
         try:
@@ -176,3 +195,12 @@ class Decoder:
                 file_.write(struct.pack('>I', chunk_crc))
         file_.close()
         return filename
+
+    def TEXT_print_chunk_data(self):
+        try:
+            for chunk in self.get_chunk(b'tEXt'):
+                data = Text(chunk)
+                print("")
+                data.print_data()
+        except ValueError:
+            raise Exception("png does not contain tEXt chunk")
