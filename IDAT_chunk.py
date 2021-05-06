@@ -19,12 +19,14 @@ class Idat:
     """
 
     def __init__(self, chunk_data, width, height):
+        self.raw_data = chunk_data
         self.all_data = zlib.decompress(chunk_data)
         self.reconstructed_pixel_data = []
         self.width = width
         self.height = height
         self.bytes_per_pixel = 4
         self.stride = self.width * self.bytes_per_pixel
+        #print(zlib.crc32(self.all_data))
 
     def print_IDAT_chunk_data(self):
         print(len(self.all_data))
@@ -78,3 +80,9 @@ class Idat:
         else:
             Pr = c
         return Pr
+
+    def compress(self):
+        #print(zlib.compress(self.all_data, 9))
+        new_data = zlib.compress(self.all_data,9)
+        crc = zlib.crc32(new_data, zlib.crc32(struct.pack('>4s', b'IDAT')))
+        return new_data, crc

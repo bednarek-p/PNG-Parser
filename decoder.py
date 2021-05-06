@@ -1,5 +1,6 @@
 import cv2
 import struct
+import zlib
 
 from chunk import read_chunk
 from fft_spectrum import Spectrum
@@ -204,3 +205,34 @@ class Decoder:
                 data.print_data()
         except ValueError:
             raise Exception("png does not contain tEXt chunk")
+
+    def modifty_file(self):
+        filename = "modyfied_file.png"
+        file_ = open(filename, 'wb')
+        file_.write(Decoder.SIGNATURE)
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+            if chunk_type in [b'IDAT']:
+                #file_.write(self.modify_data(chunk_data))
+                idat_data = chunk_data
+                image_width = Ihdr(self.chunks_list[0][1]).get_width()
+                image_height = Ihdr(self.chunks_list[0][1]).get_height()
+                data=Idat(idat_data,image_width,image_height)
+                new_data, new_crc = data.compress()
+                #new_crc = zlib.crc32(new_data)
+                chunk_len = len(new_data)
+                file_.write(struct.pack('>I', chunk_len))
+                file_.write(chunk_type)
+                file_.write(new_data)
+                file_.write(struct.pack('>I', new_crc))
+            else:
+                chunk_len = len(chunk_data)
+                file_.write(struct.pack('>I', chunk_len))
+                file_.write(chunk_type)
+                file_.write(chunk_data)
+                file_.write(struct.pack('>I', chunk_crc))
+        file_.close()
+        return filename
+
+    def modify_data(self, chunk_data):
+        print(chunk_data)
+        return chunk_data
