@@ -13,7 +13,7 @@ class KeyGenerator:
     def is_prime(self, number):
         """
         source: https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test#Python:_Probably_correct_answers
-        
+
         Miller-Rabin primality test.
     
         A return value of False means n is certainly not prime. A return value of
@@ -51,6 +51,13 @@ class KeyGenerator:
     def prime_generator(self, prime_binary_size):
         while True:
             number = random.randrange(2**(prime_binary_size-1), 2**prime_binary_size-1)
-            print(number)
             if KeyGenerator.is_prime(number): return number
 
+    @classmethod
+    def create_n(self, n_size):
+        """ n=pq """
+        p_size = n_size/2 + random.randrange(int(n_size/100), int(n_size/10)) #to avoid same bit size p and q
+        q_size = n_size - p_size
+        p = KeyGenerator.prime_generator(p_size)
+        q = KeyGenerator.prime_generator(q_size)
+        return p, q, p*q
