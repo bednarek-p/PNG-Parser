@@ -4,10 +4,12 @@ class KeyGenerator:
     """
     n = pq
     """
-    def __init__(self, key_size):
-        self.key_size = key_size
-        self.n, self.e, self.d = 0,0,0
+    def __init__(self, key_binary_size):
+        self.key_binary_size = key_binary_size
+        self.p ,self.q, self.e, self.d = 0, 0, 0, 0
         self.prime_binary_size = key_binary_size/2 #key is made by two prime numbers
+        self.public_key = self.create_publc_key()
+        self.private_key = self.create_private_key()
 
     @classmethod
     def is_prime(self, number):
@@ -54,10 +56,51 @@ class KeyGenerator:
             if KeyGenerator.is_prime(number): return number
 
     @classmethod
-    def create_n(self, n_size):
-        """ n=pq """
+    def create_pq(self, n_size):
+        """ n=pq 
+        thoughts:
+            beside p and q have correct bit size, there is possibility
+            to have n thats q_bit_size + p_bit_size -1. 
+        """
         p_size = n_size/2 + random.randrange(int(n_size/100), int(n_size/10)) #to avoid same bit size p and q
         q_size = n_size - p_size
         p = KeyGenerator.prime_generator(p_size)
         q = KeyGenerator.prime_generator(q_size)
-        return p, q, p*q
+        return p, q
+
+    @classmethod
+    def create_e(self, p, q):
+        phi = (p-1)*(q-1)
+
+        if phi >65537: return 65537 #suggested by Pan Doktor on lecture
+        else:
+            e = phi -1
+            while True:
+                if KeyGenerator.is_prime(e): return e
+                e = e - 2
+
+    @classmethod
+    def greatest_common_divisor(self, a ,b):
+        """ by Euklides """
+        if b == 0: return a
+        else : return KeyGenerator.greatest_common_divisor(b, a%b)
+
+    @classmethod
+    def create_d(self, e, p, q):
+        """ d = e^-1 %phi """
+        phi = (p-1)*(q-1)
+        u1, u2, u3 = 1, 0, e
+        v1, v2, v3 = 0, 1, phi
+        while v3 != 0:
+            q = u3 // v3 
+            v1, v2, v3, u1, u2, u3 = (u1 - q * v1), (u2 - q * v2), (u3 - q * v3), v1, v2, v3
+        return u1 % phi
+
+    def create_publc_key(self):
+        self.p ,self.q = KeyGenerator.create_pq(self.key_binary_size)
+        self.e = KeyGenerator.create_e(self.p, self.q)
+        return (self.e, self.p*self.q)
+
+    def create_private_key(self):
+        self.d = KeyGenerator.create_d(self.e, self.p, self.q)
+        return (self.d, self.p*self.q)
