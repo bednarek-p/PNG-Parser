@@ -106,3 +106,14 @@ class KeyGenerator:
     def create_private_key(self):
         self.d = self.create_d(self.e, self.p, self.q)
         return (self.d, self.p*self.q)
+
+    def __repr__(self):
+        line1 = "#### KEY ####\n"
+        line2 = "# bit lenth of data:\n"
+        line3 = f"# p: {self.p.bit_length()}\n"
+        line4 = f"# q: {self.q.bit_length()}\n"
+        line5 = f"# n: {self.private_key[1].bit_length()}\n"
+        line6 = f"# e: {self.public_key[0].bit_length()}\n"
+        line7 = f"# d: {self.private_key[0].bit_length()}\n"
+
+        return line1 + line2 + line3 + line4 + line5 + line6 + line7
