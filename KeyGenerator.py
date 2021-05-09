@@ -64,8 +64,10 @@ class KeyGenerator:
         """
         p_size = n_size/2 + random.randrange(int(n_size/100), int(n_size/10)) #to avoid same bit size p and q
         q_size = n_size - p_size
-        p = cls.prime_generator(p_size)
-        q = cls.prime_generator(q_size)
+        p,q = 0, 0
+        while (p*q).bit_length() != n_size:
+            p = cls.prime_generator(p_size)
+            q = cls.prime_generator(q_size)
         return p, q
 
     @classmethod
