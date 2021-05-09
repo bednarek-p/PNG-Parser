@@ -11,8 +11,8 @@ class KeyGenerator:
         self.public_key = self.create_publc_key()
         self.private_key = self.create_private_key()
 
-    @classmethod
-    def is_prime(self, number):
+    @staticmethod
+    def is_prime(number):
         """
         source: https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test#Python:_Probably_correct_answers
 
@@ -49,14 +49,14 @@ class KeyGenerator:
     
         return True 
 
-    @classmethod
-    def prime_generator(self, prime_binary_size):
+    @staticmethod
+    def prime_generator(prime_binary_size):
         while True:
             number = random.randrange(2**(prime_binary_size-1), 2**prime_binary_size-1)
             if KeyGenerator.is_prime(number): return number
 
     @classmethod
-    def create_pq(self, n_size):
+    def create_pq(cls, n_size):
         """ n=pq 
         thoughts:
             beside p and q have correct bit size, there is possibility
@@ -64,29 +64,29 @@ class KeyGenerator:
         """
         p_size = n_size/2 + random.randrange(int(n_size/100), int(n_size/10)) #to avoid same bit size p and q
         q_size = n_size - p_size
-        p = KeyGenerator.prime_generator(p_size)
-        q = KeyGenerator.prime_generator(q_size)
+        p = cls.prime_generator(p_size)
+        q = cls.prime_generator(q_size)
         return p, q
 
     @classmethod
-    def create_e(self, p, q):
+    def create_e(cls, p, q):
         phi = (p-1)*(q-1)
 
         if phi >65537: return 65537 #suggested by Pan Doktor on lecture
         else:
             e = phi -1
             while True:
-                if KeyGenerator.is_prime(e): return e
+                if cls.is_prime(e): return e
                 e = e - 2
 
     @classmethod
-    def greatest_common_divisor(self, a ,b):
+    def greatest_common_divisor(cls, a ,b):
         """ by Euklides """
         if b == 0: return a
-        else : return KeyGenerator.greatest_common_divisor(b, a%b)
+        else : return cls.greatest_common_divisor(b, a%b)
 
-    @classmethod
-    def create_d(self, e, p, q):
+    @staticmethod
+    def create_d(e, p, q):
         """ d = e^-1 %phi """
         phi = (p-1)*(q-1)
         u1, u2, u3 = 1, 0, e
@@ -97,10 +97,10 @@ class KeyGenerator:
         return u1 % phi
 
     def create_publc_key(self):
-        self.p ,self.q = KeyGenerator.create_pq(self.key_binary_size)
-        self.e = KeyGenerator.create_e(self.p, self.q)
+        self.p ,self.q = self.create_pq(self.key_binary_size)
+        self.e = self.create_e(self.p, self.q)
         return (self.e, self.p*self.q)
 
     def create_private_key(self):
-        self.d = KeyGenerator.create_d(self.e, self.p, self.q)
+        self.d = self.create_d(self.e, self.p, self.q)
         return (self.d, self.p*self.q)
