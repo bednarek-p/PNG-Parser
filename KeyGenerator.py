@@ -59,13 +59,14 @@ class KeyGenerator:
     def create_pq(cls, n_size):
         """ n=pq 
         thoughts:
-            beside p and q have correct bit size, there is possibility
+            - beside p and q have correct bit size, there is possibility
             to have n thats q_bit_size + p_bit_size -1. 
+            - when p and q have same bit size there is tarapaty
         """
-        p_size = n_size/2 + random.randrange(int(n_size/100), int(n_size/10)) #to avoid same bit size p and q
+        p_size = int(n_size/2) + random.randrange(int(n_size/100), int(n_size/10)) #to avoid same bit size p and q
         q_size = n_size - p_size
         p,q = 0, 0
-        while (p*q).bit_length() != n_size:
+        while (p*q).bit_length() != n_size or p == q:
             p = cls.prime_generator(p_size)
             q = cls.prime_generator(q_size)
         return p, q
@@ -73,7 +74,6 @@ class KeyGenerator:
     @classmethod
     def create_e(cls, p, q):
         phi = (p-1)*(q-1)
-
         if phi >65537: return 65537 #suggested by Pan Doktor on lecture
         else:
             e = phi -1
