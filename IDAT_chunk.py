@@ -26,8 +26,8 @@ class Idat:
         self.bytes_per_pixel = 4
         self.stride = self.width * self.bytes_per_pixel
 
-    def print_IDAT_chunk_data(self):
-        print(len(self.all_data))
+    def return_IDAT_chunk_data(self):
+        return self.all_data
 
     def plot_decoded_image(self):
         self.update_reconstructed_pixel_data()

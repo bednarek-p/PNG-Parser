@@ -1,7 +1,7 @@
 import cv2
 from decoder import Decoder
 import argparse
-
+from RSA import RSA
 
 """READING PNG FILE"""
 def init_png(image_path):
@@ -30,6 +30,8 @@ if __name__ == "__main__":
     ap.add_argument("--fft", nargs='?', const=True, default=False, help="procede Fast Fourier Transformate on png")
     ap.add_argument("--text", nargs='?', const=True, default=False, help="display information of tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
+    ap.add_argument("--encrypt", nargs='?', const=True, default=False, help="encrypt")
+    ap.add_argument("--key_size", default=False, help="key_size")
 
     args = vars(ap.parse_args())
     path = args["path"]
@@ -44,6 +46,8 @@ if __name__ == "__main__":
     fft = args["fft"]
     text = args["text"]
     anonymization = args["anonymization"]
+    encrypt = args["encrypt"]
+    key_size = args["key_size"]
 
     png = init_png(path)
     if chunk_list:
@@ -140,3 +144,14 @@ if __name__ == "__main__":
         except:
             print("NO tEXt CHUNK IN THIS FILE")
         print("-----------------------------\n")
+
+    if encrypt:
+        try:
+            png.print_chunks_type()
+            rsa = RSA(int(key_size))
+            print(rsa)
+            data_new = rsa.encrypt_ecb(png.IDAT_return_data())
+            png.save_encrypted_file('test',data_new)
+            print(len(data_new))
+        except:
+            print("CANT ENCRYPT!!!")

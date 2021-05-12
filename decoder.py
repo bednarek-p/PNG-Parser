@@ -1,5 +1,6 @@
 import cv2
 import struct
+import zlib
 
 from chunk import read_chunk
 from fft_spectrum import Spectrum
@@ -90,7 +91,15 @@ class Decoder:
         except ValueError:
             raise Exception("png does not contain IHDR chunk")
 
-
+    def IDAT_return_data(self):
+        try:
+            idat_data = b''.join(chunk_data for chunk_type, chunk_data, chunk_crc in self.chunks_list if chunk_type == b'IDAT')
+            image_width = Ihdr(self.chunks_list[0][1]).get_width()
+            image_height = Ihdr(self.chunks_list[0][1]).get_height()
+            data=Idat(idat_data,image_width,image_height)
+            return(data.return_IDAT_chunk_data())
+        except ValueError:
+            raise Exception("png does not contain IDAT chunk")
     def IDAT_plot_image(self):
         try:
             idat_data = b''.join(chunk_data for chunk_type, chunk_data, chunk_crc in self.chunks_list if chunk_type == b'IDAT')
@@ -182,6 +191,15 @@ class Decoder:
         except ValueError:
             raise Exception("png does not contain PLTE chunk")
 
+    def TEXT_print_chunk_data(self):
+        try:
+            for chunk in self.get_chunk(b'tEXt'):
+                data = Text(chunk)
+                print("")
+                data.print_data()
+        except ValueError:
+            raise Exception("png does not contain tEXt chunk")
+
     def anonymization(self):
         filename = "anonymization_result.png"
         file_ = open(filename, 'wb')
@@ -196,11 +214,29 @@ class Decoder:
         file_.close()
         return filename
 
-    def TEXT_print_chunk_data(self):
-        try:
-            for chunk in self.get_chunk(b'tEXt'):
-                data = Text(chunk)
-                print("")
-                data.print_data()
-        except ValueError:
-            raise Exception("png does not contain tEXt chunk")
+    def save_encrypted_file(self,file_name,encrypted_data):
+        filename = f"{file_name}.png"
+        file_ = open(filename, 'wb')
+        file_.write(Decoder.SIGNATURE)
+        for chunk_type, chunk_data, chunk_crc in self.chunks_list:
+            if chunk_type in [b'IDAT']:
+                idat_data = bytes(encrypted_data)
+                new_data, new_crc = self.compress_IDAT(idat_data)
+                chunk_len = len(new_data)
+                file_.write(struct.pack('>I', chunk_len))
+                file_.write(chunk_type)
+                file_.write(new_data)
+                file_.write(struct.pack('>I', new_crc))
+            else:
+                chunk_len = len(chunk_data)
+                file_.write(struct.pack('>I', chunk_len))
+                file_.write(chunk_type)
+                file_.write(chunk_data)
+                file_.write(struct.pack('>I', chunk_crc))
+        file_.close()
+        return filename
+
+    def compress_IDAT(self,all_data):
+        new_data = zlib.compress(all_data,9)
+        crc = zlib.crc32(new_data, zlib.crc32(struct.pack('>4s', b'IDAT')))
+        return new_data, crc
