@@ -31,6 +31,7 @@ if __name__ == "__main__":
     ap.add_argument("--text", nargs='?', const=True, default=False, help="display information of tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
     ap.add_argument("--encrypt", nargs='?', const=True, default=False, help="encrypt")
+    ap.add_argument("--decrypt", nargs='?', const=True, default=False, help="decrypt")
     ap.add_argument("--key_size", default=False, help="key_size")
 
     args = vars(ap.parse_args())
@@ -47,6 +48,7 @@ if __name__ == "__main__":
     text = args["text"]
     anonymization = args["anonymization"]
     encrypt = args["encrypt"]
+    decrypt = args["decrypt"]
     key_size = args["key_size"]
 
     png = init_png(path)
@@ -146,12 +148,31 @@ if __name__ == "__main__":
         print("-----------------------------\n")
 
     if encrypt:
+        print("ENCRYPTION STARTED")
+        png.print_chunks_type()
+        rsa = RSA(int(key_size))
+        print(rsa)
+        encrypted_data = rsa.encrypt_ecb(png.IDAT_return_data())
+        png.save_encrypted_file('encrypted',encrypted_data)
+        decrypted_data = rsa.decrypt_ecb(encrypted_data)
+        png.save_encrypted_file('decrypted',decrypted_data)
+
+        # try:
+        #     png.print_chunks_type()
+        #     rsa = RSA(int(key_size))
+        #     print(rsa)
+        #     encrypted_data = rsa.encrypt_ecb(png.IDAT_return_data())
+        #     png.save_encrypted_file('encrypted',encrypted_data)
+        #     decrypted_data = rsa.decrypt_ecb(encrypted_data)
+        #     png.save_encrypted_file('decrypted',decrypted_data)
+        # except:
+        #     print("CANT ENCRYPT!!!")
+        print("-----------------------------\n")
+
+    if decrypt:
+        print("DECRYPTION STARTED")
         try:
-            png.print_chunks_type()
-            rsa = RSA(int(key_size))
-            print(rsa)
-            data_new = rsa.encrypt_ecb(png.IDAT_return_data())
-            png.save_encrypted_file('test',data_new)
-            print(len(data_new))
+            print("DECRIPTION")
         except:
-            print("CANT ENCRYPT!!!")
+            print("CANT DECRIPT!!!")
+        print("-----------------------------\n")
