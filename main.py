@@ -152,10 +152,15 @@ if __name__ == "__main__":
         png.print_chunks_type()
         rsa = RSA(int(key_size))
         print(rsa)
-        encrypted_data = rsa.encrypt_ecb(png.IDAT_return_data())
-        png.save_encrypted_file('encrypted',encrypted_data)
-        decrypted_data = rsa.decrypt_ecb(encrypted_data)
+        encrypted_data = rsa.kuba_encrypt_ecb(png.IDAT_return_data())
+        png.save_encrypted_file('encrypted', encrypted_data)
+        decrypted_data = rsa.kuba_decrypt_ecb(encrypted_data)
         png.save_encrypted_file('decrypted',decrypted_data)
+
+        #encrypted_data = rsa.encrypt_ecb(png.IDAT_return_data())
+        #png.save_encrypted_file('encrypted',encrypted_data)
+        #decrypted_data = rsa.decrypt_ecb(encrypted_data)
+        #png.save_encrypted_file('decrypted',decrypted_data)
 
         # try:
         #     png.print_chunks_type()

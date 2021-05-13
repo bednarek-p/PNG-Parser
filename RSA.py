@@ -38,3 +38,44 @@ class RSA():
             #     decrypted_data.append(byte)
 
         return decrypted_data
+
+    def kuba_encrypt_ecb(self, data):
+        encrypted_data = []
+        self.original_data_len = len(data)
+        step = self.key_size//8 -1
+
+        for i in range(0, len(data), step):
+            raw_data_bytes = bytes(data[i:i+step])
+            raw_data_bytes_length = len(raw_data_bytes)
+            raw_data_int = int.from_bytes(raw_data_bytes, 'big')
+            assert raw_data_int < self.public_key[1], "M bigger than n"
+            encrypted_data_int = pow(raw_data_int, self.public_key[0], self.public_key[1])
+            encrypted_data_bytes = encrypted_data_int.to_bytes(step+1, 'big')
+            encrypted_data_length = len(encrypted_data_bytes)
+            for encrypted_byte in encrypted_data_bytes:
+                #if byte < raw_data_bytes_length -1:
+                encrypted_data.append(encrypted_byte)
+                #else: 
+                #    encrypted_data.append(int.from_bytes(encrypted_data_bytes[byte:], 'big'))
+        return encrypted_data
+    
+    def kuba_decrypt_ecb(self, data):
+        decrypted_data = []
+        step = self.key_size//8
+
+        for i in range(0, len(data), step):
+            pack = data[i:i+step]
+            encrypted_bytes = b''
+            for byte in range(0, len(pack)):
+                #if byte < len(pack) - 1:
+                encrypted_bytes = encrypted_bytes + pack[byte].to_bytes(1, 'big')
+                #else:
+                #    encrypted_bytes = encrypted_bytes + pack[byte].to_bytes(se)
+            encrypted_data_int = int.from_bytes(encrypted_bytes, 'big')
+            #print(encrypted_data_int)
+            decrypted_data_int = pow(encrypted_data_int, self.private_key[0], self.private_key[1])
+            #print(decrypted_data_int)
+            decrypted_data_bytes = decrypted_data_int.to_bytes(step-1, 'big')
+            for decrypted_byte in decrypted_data_bytes:
+                decrypted_data.append(decrypted_byte)
+        return decrypted_data
