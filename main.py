@@ -32,7 +32,9 @@ if __name__ == "__main__":
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
     ap.add_argument("--encrypt", nargs='?', const=True, default=False, help="encrypt")
     ap.add_argument("--decrypt", nargs='?', const=True, default=False, help="decrypt")
-    ap.add_argument("--key_size", default=False, help="key_size")
+    ap.add_argument("--key_size", default=False, help="generates keys key_size long", type=int)
+    ap.add_argument("--private_key", default=False, type=int, nargs=2, help="private key")
+    ap.add_argument("--public_key", default=False, type=int, nargs=2, help="public key")
 
     args = vars(ap.parse_args())
     path = args["path"]
@@ -50,6 +52,8 @@ if __name__ == "__main__":
     encrypt = args["encrypt"]
     decrypt = args["decrypt"]
     key_size = args["key_size"]
+    private_key = args["private_key"]
+    public_key = args["public_key"]
 
     png = init_png(path)
     if chunk_list:
@@ -146,36 +150,31 @@ if __name__ == "__main__":
         except:
             print("NO tEXt CHUNK IN THIS FILE")
         print("-----------------------------\n")
+    
+    if key_size:
+        print("generateing RSA keys...")
+        try:
+            rsa = RSA(key_size)
+            public_key = rsa.public_key
+            private_key = rsa.private_key
+            print(rsa)
+        except:
+            print("faild to generate keys")
+        print("-----------------------------\n")
 
     if encrypt:
         print("ENCRYPTION STARTED")
         png.print_chunks_type()
-        rsa = RSA(int(key_size))
-        print(rsa)
-        encrypted_data = rsa.kuba_encrypt_ecb(png.IDAT_return_data())
+        encrypted_data = RSA.kuba_encrypt_ecb(png.IDAT_return_data(), public_key)
         png.save_encrypted_file('encrypted', encrypted_data)
-        decrypted_data = rsa.kuba_decrypt_ecb(encrypted_data)
-        png.save_encrypted_file('decrypted',decrypted_data)
-
-        #encrypted_data = rsa.encrypt_ecb(png.IDAT_return_data())
-        #png.save_encrypted_file('encrypted',encrypted_data)
-        #decrypted_data = rsa.decrypt_ecb(encrypted_data)
-        #png.save_encrypted_file('decrypted',decrypted_data)
-
-        # try:
-        #     png.print_chunks_type()
-        #     rsa = RSA(int(key_size))
-        #     print(rsa)
-        #     encrypted_data = rsa.encrypt_ecb(png.IDAT_return_data())
-        #     png.save_encrypted_file('encrypted',encrypted_data)
-        #     decrypted_data = rsa.decrypt_ecb(encrypted_data)
-        #     png.save_encrypted_file('decrypted',decrypted_data)
-        # except:
-        #     print("CANT ENCRYPT!!!")
         print("-----------------------------\n")
 
     if decrypt:
         print("DECRYPTION STARTED")
+        png.print_chunks_type()
+        print(private_key)
+        decrypted_data = RSA.kuba_decrypt_ecb(png.IDAT_return_data(), private_key)
+        png.save_encrypted_file('decrypted',decrypted_data)
         try:
             print("DECRIPTION")
         except:
