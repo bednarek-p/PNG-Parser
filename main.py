@@ -150,7 +150,7 @@ if __name__ == "__main__":
         except:
             print("NO tEXt CHUNK IN THIS FILE")
         print("-----------------------------\n")
-    
+
     if key_size:
         print("generateing RSA keys...")
         try:
@@ -164,19 +164,21 @@ if __name__ == "__main__":
 
     if encrypt:
         print("ENCRYPTION STARTED")
-        png.print_chunks_type()
-        encrypted_data = RSA.kuba_encrypt_ecb(png.IDAT_return_data(), public_key)
-        png.save_encrypted_file('encrypted', encrypted_data)
+        try:
+            png.print_chunks_type()
+            encrypted_data = RSA.encrypt_ecb(png.IDAT_return_data(), public_key)
+            png.save_file('encrypted', encrypted_data)
+        except:
+            print("CANT ENCRIPTION!!!")
         print("-----------------------------\n")
 
     if decrypt:
         print("DECRYPTION STARTED")
-        png.print_chunks_type()
-        print(private_key)
-        decrypted_data = RSA.kuba_decrypt_ecb(png.IDAT_return_data(), private_key)
-        png.save_encrypted_file('decrypted',decrypted_data)
         try:
-            print("DECRIPTION")
+            png.print_chunks_type()
+            print(private_key)
+            decrypted_data = RSA.decrypt_ecb(png.IDAT_return_data(), private_key)
+            png.save_file('decrypted',decrypted_data)
         except:
-            print("CANT DECRIPT!!!")
+            print("CANT DECRIPTION!!!")
         print("-----------------------------\n")
