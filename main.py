@@ -37,6 +37,7 @@ if __name__ == "__main__":
     ap.add_argument("--key_size", default=False, help="generates keys key_size long", type=int)
     ap.add_argument("--private_key", default=False, type=int, nargs=2, help="private key")
     ap.add_argument("--public_key", default=False, type=int, nargs=2, help="public key")
+    ap.add_argument("--init_vector", default=False, type=int, help="First initialization vector")
 
     args = vars(ap.parse_args())
     path = args["path"]
@@ -58,6 +59,7 @@ if __name__ == "__main__":
     key_size = args["key_size"]
     private_key = args["private_key"]
     public_key = args["public_key"]
+    init_vector = args["init_vector"]
 
     png = init_png(path)
     if chunk_list:
@@ -197,5 +199,10 @@ if __name__ == "__main__":
             print("CANT DO CIPHER BLOCK CHAINING ENCRIPTION!!!")
         print("-----------------------------\n")
 
-    if encrypt_cbc:
-        pass
+    if decrypt_cbc:
+        print("ELECTRONIC CODEBOOK DECRYPTION STARTED")
+        png.print_chunks_type()
+        print(private_key)
+        decrypted_data = RSA.decrypt_cbc(png.IDAT_return_data(), private_key,int(init_vector))
+        png.save_file('decrypted_cbc',decrypted_data)
+        print("-----------------------------\n")
