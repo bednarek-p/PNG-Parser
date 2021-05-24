@@ -1,3 +1,4 @@
+import random
 from KeyGenerator import KeyGenerator
 
 class RSA():
@@ -43,4 +44,54 @@ class RSA():
             decrypted_data_bytes = decrypted_data_int.to_bytes(step-1, 'big')
             for decrypted_byte in decrypted_data_bytes:
                 decrypted_data.append(decrypted_byte)
+        return decrypted_data
+
+
+
+    @staticmethod
+    def encrypt_cbc(data, public_key):
+        key_size = public_key[1].bit_length()
+        encrypted_data = []
+        step = key_size//8 -1
+        previous = random.getrandbits(key_size)
+        print(f"First Initialization Vector: {previous}")
+        for i in range(0, len(data), step):
+            raw_data_bytes = bytes(data[i:i+step])
+
+            previous = previous.to_bytes(step + 1, 'big')
+            previous = int.from_bytes(previous[:len(raw_data_bytes)], 'big')
+            xor = int.from_bytes(raw_data_bytes, 'big') ^ previous
+
+            encrypted_data_int = pow(xor, public_key[0], public_key[1])
+            previous = encrypted_data_int
+            encrypted_data_bytes = encrypted_data_int.to_bytes(step + 1, 'big')
+
+            for encrypted_byte in encrypted_data_bytes:
+                encrypted_data.append(encrypted_byte)
+        return encrypted_data
+
+    @staticmethod
+    def decrypt_cbc(data, private_key, initialization_vector):
+        key_size = private_key[1].bit_length()
+        decrypted_data = []
+        step = key_size//8
+        previous = initialization_vector
+
+        for i in range(0, len(data), step):
+            encrypted_bytes = b''
+            for byte in data[i:i+step]:
+                encrypted_bytes += byte.to_bytes(1, 'big')
+
+            encrypted_data_int = int.from_bytes(encrypted_bytes, 'big')
+            decrypted_data_int = pow(encrypted_data_int, private_key[0], private_key[1])
+
+            previous = previous.to_bytes(step,'big')
+            previous = int.from_bytes(previous[:step-1], 'big')
+            xor = previous ^ decrypted_data_int
+
+            decrypted_data_bytes = xor.to_bytes(step-1, 'big')
+            for decrypted_byte in decrypted_data_bytes:
+                decrypted_data.append(decrypted_byte)
+
+            previous = int.from_bytes(encrypted_bytes, 'big')
         return decrypted_data
