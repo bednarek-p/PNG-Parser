@@ -30,8 +30,10 @@ if __name__ == "__main__":
     ap.add_argument("--fft", nargs='?', const=True, default=False, help="procede Fast Fourier Transformate on png")
     ap.add_argument("--text", nargs='?', const=True, default=False, help="display information of tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
-    ap.add_argument("--encrypt", nargs='?', const=True, default=False, help="encrypt")
-    ap.add_argument("--decrypt", nargs='?', const=True, default=False, help="decrypt")
+    ap.add_argument("--encrypt_ecb", nargs='?', const=True, default=False, help="electronic codebook encryption")
+    ap.add_argument("--decrypt_ecb", nargs='?', const=True, default=False, help="electronic codebook decryption")
+    ap.add_argument("--encrypt_cbc", nargs='?', const=True, default=False, help="cipher block chaining encryption")
+    ap.add_argument("--decrypt_cbc", nargs='?', const=True, default=False, help="cipher block chaining decryption")
     ap.add_argument("--key_size", default=False, help="generates keys key_size long", type=int)
     ap.add_argument("--private_key", default=False, type=int, nargs=2, help="private key")
     ap.add_argument("--public_key", default=False, type=int, nargs=2, help="public key")
@@ -49,8 +51,10 @@ if __name__ == "__main__":
     fft = args["fft"]
     text = args["text"]
     anonymization = args["anonymization"]
-    encrypt = args["encrypt"]
-    decrypt = args["decrypt"]
+    encrypt_ecb = args["encrypt_ecb"]
+    decrypt_ecb = args["decrypt_ecb"]
+    encrypt_cbc = args["encrypt_cbc"]
+    decrypt_cbc = args["decrypt_cbc"]
     key_size = args["key_size"]
     private_key = args["private_key"]
     public_key = args["public_key"]
@@ -162,23 +166,36 @@ if __name__ == "__main__":
             print("faild to generate keys")
         print("-----------------------------\n")
 
-    if encrypt:
-        print("ENCRYPTION STARTED")
+    if encrypt_ecb:
+        print("ELECTRONIC CODEBOOK ENCRYPTION STARTED")
         try:
             png.print_chunks_type()
             encrypted_data = RSA.encrypt_ecb(png.IDAT_return_data(), public_key)
-            png.save_file('encrypted', encrypted_data)
+            png.save_file('encrypted_ecb', encrypted_data)
         except:
-            print("CANT ENCRIPTION!!!")
+            print("CANT DO ELECTRONIC CODEBOOK ENCRIPTION!!!")
         print("-----------------------------\n")
 
-    if decrypt:
-        print("DECRYPTION STARTED")
+    if decrypt_ecb:
+        print("ELECTRONIC CODEBOOK DECRYPTION STARTED")
         try:
             png.print_chunks_type()
             print(private_key)
             decrypted_data = RSA.decrypt_ecb(png.IDAT_return_data(), private_key)
-            png.save_file('decrypted',decrypted_data)
+            png.save_file('decrypted_ecb',decrypted_data)
         except:
-            print("CANT DECRIPTION!!!")
+            print("CANT DO ELECTRONIC CODEBOOK DECRIPTION!!!")
         print("-----------------------------\n")
+
+    if encrypt_cbc:
+        print("CIPHER BLOCK CHAINING ENCRYPTION STARTED")
+        try:
+            png.print_chunks_type()
+            encrypted_data = RSA.encrypt_cbc(png.IDAT_return_data(), public_key)
+            png.save_file('encrypted_cbc', encrypted_data)
+        except:
+            print("CANT DO CIPHER BLOCK CHAINING ENCRIPTION!!!")
+        print("-----------------------------\n")
+
+    if encrypt_cbc:
+        pass
