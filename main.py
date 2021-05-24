@@ -1,7 +1,7 @@
 import cv2
 from decoder import Decoder
 import argparse
-
+from RSA import RSA
 
 """READING PNG FILE"""
 def init_png(image_path):
@@ -30,6 +30,11 @@ if __name__ == "__main__":
     ap.add_argument("--fft", nargs='?', const=True, default=False, help="procede Fast Fourier Transformate on png")
     ap.add_argument("--text", nargs='?', const=True, default=False, help="display information of tEXt chunk")
     ap.add_argument("-a", "--anonymization", nargs='?', const=True, default=False, help="proced anonymization")
+    ap.add_argument("--encrypt", nargs='?', const=True, default=False, help="encrypt")
+    ap.add_argument("--decrypt", nargs='?', const=True, default=False, help="decrypt")
+    ap.add_argument("--key_size", default=False, help="generates keys key_size long", type=int)
+    ap.add_argument("--private_key", default=False, type=int, nargs=2, help="private key")
+    ap.add_argument("--public_key", default=False, type=int, nargs=2, help="public key")
 
     args = vars(ap.parse_args())
     path = args["path"]
@@ -44,6 +49,11 @@ if __name__ == "__main__":
     fft = args["fft"]
     text = args["text"]
     anonymization = args["anonymization"]
+    encrypt = args["encrypt"]
+    decrypt = args["decrypt"]
+    key_size = args["key_size"]
+    private_key = args["private_key"]
+    public_key = args["public_key"]
 
     png = init_png(path)
     if chunk_list:
@@ -139,4 +149,36 @@ if __name__ == "__main__":
             png.TEXT_print_chunk_data()
         except:
             print("NO tEXt CHUNK IN THIS FILE")
+        print("-----------------------------\n")
+
+    if key_size:
+        print("generateing RSA keys...")
+        try:
+            rsa = RSA(key_size)
+            public_key = rsa.public_key
+            private_key = rsa.private_key
+            print(rsa)
+        except:
+            print("faild to generate keys")
+        print("-----------------------------\n")
+
+    if encrypt:
+        print("ENCRYPTION STARTED")
+        try:
+            png.print_chunks_type()
+            encrypted_data = RSA.encrypt_ecb(png.IDAT_return_data(), public_key)
+            png.save_file('encrypted', encrypted_data)
+        except:
+            print("CANT ENCRIPTION!!!")
+        print("-----------------------------\n")
+
+    if decrypt:
+        print("DECRYPTION STARTED")
+        try:
+            png.print_chunks_type()
+            print(private_key)
+            decrypted_data = RSA.decrypt_ecb(png.IDAT_return_data(), private_key)
+            png.save_file('decrypted',decrypted_data)
+        except:
+            print("CANT DECRIPTION!!!")
         print("-----------------------------\n")
