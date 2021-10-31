@@ -1,6 +1,12 @@
 # PNG-Parser
 Python tool to analyse .PNG files.
 
+## Run example
+
+```
+python main.py -p ./images/1.png -l --ihdr --plte --idat --iend
+```
+
 ### Arguments
 | Option String | Required |  Default| Option Summary |  
 |---------------|----------|--------|----------------|  
